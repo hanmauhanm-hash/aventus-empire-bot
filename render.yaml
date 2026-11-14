@@ -1,0 +1,14 @@
+services:
+  - type: worker
+    name: aventus-empire-bot
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node src/index.js
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: CLIENT_ID
+        sync: false
+      - key: PUTER_AUTH_TOKEN
+        sync: false

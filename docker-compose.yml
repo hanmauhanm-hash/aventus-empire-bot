@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  aventus-bot:
+    build: .
+    container_name: aventus-empire-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./temp:/app/temp
