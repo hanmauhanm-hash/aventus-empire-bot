@@ -21,8 +21,8 @@ RUN npm install --omit=dev
 COPY src/ ./src/
 COPY .env.example ./
 
-# Create data and temp directories
-RUN mkdir -p data temp
+# Create data and temp directories and ensure full permissions
+RUN mkdir -p data temp && chown -R node:node /app
 
 # Non-root user for security
 USER node
