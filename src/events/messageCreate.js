@@ -9,13 +9,31 @@ export default {
   async execute(message, client) {
     if (message.author.bot) return;
 
-    // 1. Direct AI @Mention handling
+    // Log all incoming messages for Railway debugging
+    console.log(`[Message Event] "${message.content || '<NO_CONTENT_INTENT>'}" from ${message.author.tag} in #${message.channel?.name || 'DM'}`);
+
+    // 1. Direct AI / Bot @Mention handling (Works even without Message Content intent)
     const isMentioned = message.mentions.has(client.user.id) && !message.mentions.everyone;
     if (isMentioned) {
-      const cleanPrompt = message.content.replace(new RegExp(`<@!?${client.user.id}>`, 'g'), '').trim();
+      const cleanPrompt = message.content.replace(new RegExp(`<@!?${client.user.id}>`, 'g'), '').trim().toLowerCase();
 
-      if (!cleanPrompt) {
-        return message.reply(`👑 Hail <@${message.author.id}>! Ask me any strategic question regarding Lifeboat Survival tactics, Bedrock PvP, base defense, or pack conversions.`);
+      if (!cleanPrompt || cleanPrompt === 'help') {
+        const embed = AventusEmbed.imperial(
+          `${CLAN.NAME} — Command Codex`,
+          `Hail <@${message.author.id}>! You summoned the Vanguard.\n\n` +
+          `• **OwO RPG:** \`!hunt\`, \`!zoo\`, \`!battle\`, \`!daily\`, \`!coinflip\`, \`!slots\`\n` +
+          `• **Lifeboat Status:** \`!lbsg\`\n` +
+          `• **Puter AI Advisor:** \`!ask <question>\` or ask me anything directly by @mentioning me!\n` +
+          `• **Pack Tools:** \`/convert\` and \`/recolor\``
+        );
+        return await message.reply({ embeds: [embed] }).catch(err => {
+          console.error('[Send Error]:', err.message);
+          message.channel.send(`👑 Hail <@${message.author.id}>! Use \`!help\` or \`!hunt\`. (Please grant me "Embed Links" permission!)`);
+        });
+      }
+
+      if (cleanPrompt === 'ping') {
+        return await message.reply(`⚔️ **PONG!** Gateway latency: \`${client.ws.ping}ms\``);
       }
 
       try {
